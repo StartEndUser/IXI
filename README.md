@@ -16,6 +16,11 @@ Download the source code *(`git` is needed)*
 git clone https://github.com/StartEndUser/T2S.git
 ```
 
+Enter T2S Directory:
+```
+cd T2S
+```
+
 Compile it *(`g++` is needed)*
 
 Windows:
