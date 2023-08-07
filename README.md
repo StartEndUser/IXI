@@ -5,6 +5,7 @@
 Change all tabs to spaces under the specific files.
 
 Version: 0.0.0 (TEST)
+
 **Since this project is in TEST. If any bug found please report it. Thank you.**
 
 **!!VERY IMPORTANT!! IF YOUR CODE CONTAINS ANY TABS INSIDE A STRING(OR OTHER PLACES THAT YOU DON'T WANT IT TO BE CHANGED) PLEASE REPLACS IT WITH `\t`. DON'T JUST TYPE A TAB INSIDE!!!**
@@ -45,9 +46,9 @@ Example
     ├── Feature2.hpp
     └── Main.cpp
 ```
-*(Files with a start a the back means it will be changed)*
+*(Files with a star at the back means it will be changed)*
 
-If you want to change only specific files:
+If you want to change only one file:
 ```
 t2s Source Source/Main.cpp
 ```
@@ -73,8 +74,11 @@ You can also change more at once:
 t2s Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
 ```
 *(Notice: if your directory or file STARTS with a `-` such as `-Minus` to add it from changing, input `@-Minus` and to delete it from changing, input `--Minus`)*
+
 *(The `@` in here changes special meaning symbols(this program's) into normal character)*
+
 *(Notice: if your directory or file CONTAINS a `@` such as `@@@///` to add it from changing, input `@@@@@@///`(Every `@` will be changed into `@@`) and add a `-` before it to delete it from changing)*
+
 *(`@` is not `\`. `\` is used for your bash. `@` is used for this program)*
 
 After:
@@ -116,7 +120,9 @@ Example
 ```
 
 Put a `-` before a directory or a file can stop change it:
+
 *(Notice: The order MATTERS. The program reads from left to right)*
+
 *(Notice: There is no detection wether the directory or file was added. If not added. It will just skip)*
 ```
 t2s Source -Source/Main.cpp
