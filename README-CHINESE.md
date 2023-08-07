@@ -12,7 +12,7 @@
 ## 下载
 下载源代码 *（需要使用`git`）*
 ```
-git https://github.com/StartEndUser/T2S.git
+git clone https://github.com/StartEndUser/T2S.git
 ```
 
 编译代码 *（需要使用`g++`）*

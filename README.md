@@ -13,7 +13,7 @@ Version: 0.0.1 (TEST)
 ## Install
 Download the source code *(`git` is needed)*
 ```
-git https://github.com/StartEndUser/T2S.git
+git clone https://github.com/StartEndUser/T2S.git
 ```
 
 Compile it *(`g++` is needed)*
