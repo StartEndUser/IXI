@@ -311,7 +311,7 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
     }
     printf("\n");
 
-    // Free
+    // Finished
     printf("Finished\n");
 
     return 0;
