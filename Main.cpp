@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 #include <fstream>
 #include <set>
 #include <vector>
@@ -23,10 +24,9 @@ enum class Path
  * @param outputParameter The Output Text.
  * @param addParameter Adding File(Directory) Or Deleting.
  */
-void translateInput(char *inputParameter, char *outputParameter, bool &addParameter)
+void translateInput(char *inputParameter, std::string &outputParameter, bool &addParameter)
 {
     unsigned int inputIndex = 0;
-    unsigned int outputIndex = 0;
 
     if (inputParameter[0] == '-')
     {
@@ -39,7 +39,7 @@ void translateInput(char *inputParameter, char *outputParameter, bool &addParame
     }
 
     bool special = true;
-    for (; inputIndex <= strlen(inputParameter); ++inputIndex)
+    for (; inputIndex < strlen(inputParameter); ++inputIndex)
     {
         if (inputParameter[inputIndex] == '-' && !special)
         {
@@ -59,8 +59,7 @@ void translateInput(char *inputParameter, char *outputParameter, bool &addParame
             }
         }
 
-        outputParameter[outputIndex] = inputParameter[inputIndex];
-        ++outputIndex;
+        outputParameter += inputParameter[inputIndex];
     }
 }
 
@@ -69,10 +68,10 @@ void translateInput(char *inputParameter, char *outputParameter, bool &addParame
  * @param pathParameter The Path.
  * @return Is Exist Or Not And Iit's Type.
  */
-Path isExist(char *pathParameter)
+Path isExist(std::string pathParameter)
 {
     struct stat status;
-    if (!stat(pathParameter, &status))
+    if (!stat(pathParameter.c_str(), &status))
     {
         if (status.st_mode & S_IFREG)
         {
@@ -88,7 +87,7 @@ Path isExist(char *pathParameter)
         }
     }
 
-    printf("ERROR: File Type Detection Failed When Detecting: %s\n", pathParameter);
+    printf("ERROR: File Type Detection Failed When Detecting: %s\n", pathParameter.c_str());
     exit(-1);
 }
 
@@ -97,13 +96,13 @@ Path isExist(char *pathParameter)
  * @param pathParameter The Path.
  * @return The File Names.
  */
-std::set<char *> getFiles(char *pathParameter)
+std::set<std::string> getFiles(std::string pathParameter)
 {
     DIR *directory;
     dirent *pointer;
-    std::set<char *> result;
+    std::set<std::string> result;
 
-    directory = opendir(pathParameter);
+    directory = opendir(pathParameter.c_str());
 
     while (pointer = readdir(directory))
     {
@@ -112,18 +111,14 @@ std::set<char *> getFiles(char *pathParameter)
             continue;
         }
 
-        char *path = new char[strlen(pathParameter) - 1 + 1 + strlen(pointer->d_name)];
-        strcpy(path, pathParameter);
-        strcat(path, "/");
-        strcat(path, pointer->d_name);
+        std::string path = pathParameter;
+        path += "/";
+        path += pointer->d_name;
         if (isExist(path) == Path::File)
         {
-            if (strlen(path) > 2 && path[0] == '.' && path[1] == '/')
+            if (path.size() > 2 && path[0] == '.' && path[1] == '/')
             {
-                char *realPath = new char[strlen(path) - 2];
-                strcpy(realPath, path + 2);
-                result.insert(realPath);
-                delete[] path;
+                result.insert(path.substr(2));
             }
             else
             {
@@ -132,9 +127,8 @@ std::set<char *> getFiles(char *pathParameter)
         }
         else
         {
-            std::set<char *> get = getFiles(path);
+            std::set<std::string> get = getFiles(path);
             result.insert(get.begin(), get.end());
-            delete[] path;
         }
     }
 
@@ -149,20 +143,9 @@ std::set<char *> getFiles(char *pathParameter)
  * @param detectParameter The File To Check.
  * @return Added Or Not.
  */
-bool added(std::vector<char *> &filesParameter, char *detectParameter)
+bool added(std::vector<std::string> &filesParameter, std::string detectParameter)
 {
-    bool result = false;
-
-    for (unsigned int index = 0; index < filesParameter.size(); ++index)
-    {
-        if (!strcmp(detectParameter, filesParameter[index]))
-        {
-            result = true;
-            break;
-        }
-    }
-
-    return result;
+    return find(filesParameter.begin(), filesParameter.end(), detectParameter) != filesParameter.end();
 }
 
 int main(int argumentNumberParameter, char *argumentsParameter[])
@@ -170,19 +153,19 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
     // Setup Varibles
     unsigned int argumentNumber = argumentNumberParameter - 1;
     char **arguments = &argumentsParameter[1];
-    std::vector<char *> files;
+    std::vector<std::string> files;
 
     // Get And Check Files
     for (unsigned int index = 0; index < argumentNumber; ++index)
     {
-        char *translate = new char[strlen(arguments[index])];
+        std::string translate = "";
         bool add;
         translateInput(arguments[index], translate, add);
 
         Path pathType = isExist(translate);
         if (!(bool)pathType)
         {
-            printf("ERROR: Unknown File Or Directory: %s\n", translate);
+            printf("ERROR: Unknown File Or Directory: %s\n", translate.c_str());
             return -1;
         }
 
@@ -195,13 +178,11 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
                     continue;
                 }
 
-                char *addFile = new char[strlen(translate)];
-                strcpy(addFile, translate);
-                files.emplace_back(addFile);
+                files.emplace_back(translate);
             }
             else
             {
-                std::set<char *> get = getFiles(translate);
+                std::set<std::string> get = getFiles(translate);
                 while (!get.empty())
                 {
                     if (added(files, *get.begin()))
@@ -221,7 +202,7 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
             {
                 for (unsigned int index = 0; index < files.size(); ++index)
                 {
-                    if (!strcmp(translate, files[index]))
+                    if (translate == files[index])
                     {
                         files.erase(files.begin() + index);
                         break;
@@ -230,12 +211,12 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
             }
             else
             {
-                std::set<char *> get = getFiles(translate);
-                for (std::set<char *>::iterator item = get.begin(); item != get.end(); ++item)
+                std::set<std::string> get = getFiles(translate);
+                for (std::set<std::string>::iterator item = get.begin(); item != get.end(); ++item)
                 {
                     for (unsigned int index = 0; index < files.size(); ++index)
                     {
-                        if (!strcmp(*item, files[index]))
+                        if (*item == files[index])
                         {
                             files.erase(files.begin() + index);
                             break;
@@ -250,7 +231,7 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
     printf("Targets:\n");
     for (unsigned int index = 0; index < files.size(); ++index)
     {
-        printf("%s\n", files[index]);
+        printf("%s\n", files[index].c_str());
     }
     printf("\n");
 
@@ -286,12 +267,12 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
     printf("Running:\n");
     while (!files.empty())
     {
-        printf("%s\n", files[0]);
-        FILE *file = fopen(files[0], "r");
+        printf("%s\n", files[0].c_str());
+        FILE *file = fopen(files[0].c_str(), "r");
 
         if (file == NULL)
         {
-            printf("Error: Failed To Open File: %s\n", files[0]);
+            printf("Error: Failed To Open File: %s\n", files[0].c_str());
             return -1;
         }
 
@@ -300,18 +281,17 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
         if (!size)
         {
             fclose(file);
-            delete[] files[0];
             files.erase(files.begin());
             continue;
         }
-        char *fileContent = new char[size];
+        std::string fileContent(size, '\0');
         fseek(file, 0, SEEK_SET);
-        fread(fileContent, size, 1, file);
+        fread(&fileContent[0], size, sizeof(char), file);
 
         fclose(file);
-        file = fopen(files[0], "w");
+        file = fopen(files[0].c_str(), "w");
 
-        for (unsigned long long index = 0; index < strlen(fileContent); ++index)
+        for (unsigned long long index = 0; index < fileContent.size(); ++index)
         {
             if (fileContent[index] == '\t')
             {
@@ -327,9 +307,7 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
         }
 
         fclose(file);
-        delete[] files[0];
         files.erase(files.begin());
-        delete[] fileContent;
     }
     printf("\n");
 
