@@ -15,6 +15,11 @@
 git clone https://github.com/StartEndUser/T2S.git
 ```
 
+进入T2S目录中：
+```
+cd T2S
+```
+
 编译代码 *（需要使用`g++`）*
 
 Windows:
