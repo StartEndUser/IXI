@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <fstream>
 #include <set>
+#include <type_traits>
 #include <vector>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -104,7 +105,7 @@ std::set<std::string> getFiles(std::string pathParameter)
 
     directory = opendir(pathParameter.c_str());
 
-    while (pointer = readdir(directory))
+    while ((pointer = readdir(directory)))
     {
         if (!strcmp(pointer->d_name, ".") || !strcmp(pointer->d_name, ".."))
         {
