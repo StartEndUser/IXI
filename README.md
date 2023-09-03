@@ -1,4 +1,5 @@
-# Simple Fix
+# IXI
+F*IX I*T
 
 [中文文档](README-CHINESE.md)
 
@@ -53,29 +54,29 @@ Version: 1.0.0
 ## Install
 Download the source code *(`git` is needed)*
 ```
-git clone https://github.com/StartEndUser/SimpleFix.git
+git clone https://github.com/StartEndUser/IXI.git
 ```
 
-Enter SimpleFix Directory:
+Enter IXI Directory:
 ```
-cd SimpleFix
+cd IXI
 ```
 
 Compile it *(`g++` is needed)*
 
 Windows:
 ```
-g++ Main.cpp -o sf.exe -O2
+g++ Main.cpp -o ixi.exe -O2
 ```
 MacOS/Linux:
 ```
-g++ Main.cpp -o sf -O2
+g++ Main.cpp -o ixi -O2
 ```
 
-**ADD `sf` TO `$PATH` OTHERWISE YOU WOULD NEED TO COPY `sf` TO THE FOLDER YOU'LL CHANGE**
+**ADD `ixi` TO `$PATH` OTHERWISE YOU WOULD NEED TO COPY `ixi` TO THE FOLDER YOU'LL CHANGE**
 ## Instruction
 ### Select Files
-*This is the example folder. Now you are running `sf` at the `Example` folder*
+*This is the example folder. Now you are running `ixi` at the `Example` folder*
 ```
 Example
 ├── Binary
@@ -95,7 +96,7 @@ Example
 
 If you want to change only one file:
 ```
-sf Source Source/Main.cpp
+ixi Source Source/Main.cpp
 ```
 After:
 ```
@@ -116,7 +117,7 @@ Example
 
 You can also change more at once:
 ```
-sf Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
+ixi Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
 ```
 *(Notice: if your directory or file STARTS with a `-` such as `-Minus` to add it from changing, input `@-Minus` and to delete it from changing, input `--Minus`)*
 
@@ -145,7 +146,7 @@ Example
 
 Selecting a directory is also legal:
 ```
-sf Source
+ixi Source
 ```
 After:
 ```
@@ -170,7 +171,7 @@ Put a `-` before a directory or a file can stop change it:
 
 *(Notice: There is no detection wether the directory or file was added. If not added. It will just skip)*
 ```
-sf Source -Source/Main.cpp
+ixi Source -Source/Main.cpp
 ```
 After:
 ```
@@ -191,11 +192,11 @@ Example
 
 *Tip: To Add All Files Under The Current Folder:*
 ```
-sf .
+ixi .
 ```
 
 ### Tabs To Spaces
-Press <kbd>Enter</kbd> to start `sf`.
+Press <kbd>Enter</kbd> to start `ixi`.
 The program will output:
 ```
 Tab length (skip if nothing):

@@ -1,4 +1,5 @@
-# Simple Fix
+# IXI
+F*IX I*T
 
 [English Document](README.md)
 
@@ -53,29 +54,29 @@ int.main()
 ## 下载
 下载源代码 *（需要使用`git`）*
 ```
-git clone https://github.com/StartEndUser/SimpleFix.git
+git clone https://github.com/StartEndUser/IXI.git
 ```
 
-进入SimpleFix目录中：
+进入IXI目录中：
 ```
-cd SimpleFix
+cd IXI
 ```
 
 编译代码 *（需要使用`g++`）*
 
 Windows:
 ```
-g++ Main.cpp -o sf.exe -O2
+g++ Main.cpp -o ixi.exe -O2
 ```
 MacOS/Linux:
 ```
-g++ Main.cpp -o sf -O2
+g++ Main.cpp -o ixi -O2
 ```
 
-**务必将`sf`添加到`$PATH`否则你需要`sf`放到你要操作的目录里**
+**务必将`ixi`添加到`$PATH`否则你需要`ixi`放到你要操作的目录里**
 ## 使用
 ### 选择文件
-*这是示范文件。你现在在`Example`文件夹里运行`sf`*
+*这是示范文件。你现在在`Example`文件夹里运行`ixi`*
 ```
 Example
 ├── Binary
@@ -95,7 +96,7 @@ Example
 
 如果想选择单个文件：
 ```
-sf Source Source/Main.cpp
+ixi Source Source/Main.cpp
 ```
 运行后：
 ```
@@ -116,7 +117,7 @@ Example
 
 也可以一次性选择多个文件：
 ```
-sf Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
+ixi Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
 ```
 *（注意：如果你的文件以`-`开头。比如`-Minus`如果想要添加它，输入`@-Minus`如果想要删除它，输入`--Minus`）*
 
@@ -145,7 +146,7 @@ Example
 
 选择一个文件夹也是可行的:
 ```
-sf Source
+ixi Source
 ```
 运行后：
 ```
@@ -170,7 +171,7 @@ Example
 
 *（注意：如果取消了本来就不存在于操作列表的文件。程序不会报错。只会继续）*
 ```
-sf Source -Source/Main.cpp
+ixi Source -Source/Main.cpp
 ```
 After:
 ```
@@ -191,11 +192,11 @@ Example
 
 *技巧：如果想要将当前文件夹下所有文件选中：*
 ```
-sf .
+ixi .
 ```
 
 ### Tab转空格
-按下<kbd>Enter</kbd>键运行`sf`。
+按下<kbd>Enter</kbd>键运行`ixi`。
 程序会输出：
 ```
 Tab length (skip if nothing):
