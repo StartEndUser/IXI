@@ -1,5 +1,5 @@
 # IXI
-F*IX I*T
+F**IX I**T
 
 [English Document](README.md)
 
