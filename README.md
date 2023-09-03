@@ -1,5 +1,5 @@
 # IXI
-F*IX I*T
+F**IX I**T
 
 [中文文档](README-CHINESE.md)
 
