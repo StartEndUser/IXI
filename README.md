@@ -24,8 +24,11 @@ int.main()
 ```
 
 Config:
+
 Tab Length: 4
+
 Delete Mode: A *(All)*
+
 Leave Lines: 1
 
 After:
