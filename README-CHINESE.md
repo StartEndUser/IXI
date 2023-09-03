@@ -1,41 +1,78 @@
-# T2S （Tab转空格）
+# Simple Fix
 
 [English Document](README.md)
 
-将所有指定的文件的Tab转空格
+- Tab转空格
+- 删除无用的空格和Tab
+- 在行末仅留下指定行数
 
-版本: 0.0.1 （测试）
+*（空格显示为 .）*
 
-**由于本项目处于测试版本。如果有任何BUG请汇报。谢谢。**
+*（Tab显示为 --->）*
+```cpp
+#include.<cstdio>.....       | （无用空格)
+....                         | （无用空格）
+int.main()
+{--->--->                    | （无用Tab）
+--->printf("Hello.World\n"); | （把Tab和空格混在一起)）
+....                         | （无用空格）
+....return.0;
+}
+--->                         | （无用Tab）
+.                            | （无用空格）
+                             | （太多行末换行）
+```
+
+配置：
+Tab长度：4
+删除模式：A *（所有）*
+末行数：1
+
+运行后：
+```cpp
+#include.<cstdio>
+
+int.main()
+{
+....printf("Hello.World\n");
+
+....return.0;
+}
+                             | （只留一行）
+```
+
+版本: 1.0.0
+
+**如果有任何BUG请汇报。谢谢。**
 
 **！！非常重要！！ 如果你的代码的字符串内含有任何Tab（或者别处也有但你不想要将其替换）请将Tab替换成`\t`。不要直接输入Tab！！**
 
 ## 下载
 下载源代码 *（需要使用`git`）*
 ```
-git clone https://github.com/StartEndUser/T2S.git
+git clone https://github.com/StartEndUser/SimpleFix.git
 ```
 
-进入T2S目录中：
+进入SimpleFix目录中：
 ```
-cd T2S
+cd SimpleFix
 ```
 
 编译代码 *（需要使用`g++`）*
 
 Windows:
 ```
-g++ Main.cpp -o t2s.exe
+g++ Main.cpp -o sf.exe -O2
 ```
-Linux:
+MacOS/Linux:
 ```
-g++ Main.cpp -o t2s
+g++ Main.cpp -o sf -O2
 ```
 
-**务必将`t2s`添加到`$PATH`否则你需要`t2s`放到你要操作的目录里**
+**务必将`sf`添加到`$PATH`否则你需要`sf`放到你要操作的目录里**
 ## 使用
 ### 选择文件
-*这是示范文件。你现在在`Example`文件夹里运行`t2s`*
+*这是示范文件。你现在在`Example`文件夹里运行`sf`*
 ```
 Example
 ├── Binary
@@ -55,7 +92,7 @@ Example
 
 如果想选择单个文件：
 ```
-t2s Source Source/Main.cpp
+sf Source Source/Main.cpp
 ```
 运行后：
 ```
@@ -76,7 +113,7 @@ Example
 
 也可以一次性选择多个文件：
 ```
-t2s Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
+sf Source/Main.cpp Source/Feature1.cpp Source/Feature2.cpp
 ```
 *（注意：如果你的文件以`-`开头。比如`-Minus`如果想要添加它，输入`@-Minus`如果想要删除它，输入`--Minus`）*
 
@@ -105,7 +142,7 @@ Example
 
 选择一个文件夹也是可行的:
 ```
-t2s Source
+sf Source
 ```
 运行后：
 ```
@@ -130,7 +167,7 @@ Example
 
 *（注意：如果取消了本来就不存在于操作列表的文件。程序不会报错。只会继续）*
 ```
-t2s Source -Source/Main.cpp
+sf Source -Source/Main.cpp
 ```
 After:
 ```
@@ -151,26 +188,47 @@ Example
 
 *技巧：如果想要将当前文件夹下所有文件选中：*
 ```
-t2s .
+sf .
 ```
 
-### 缩进
-按下<kbd>Enter</kbd>键运行`t2s`。
+### Tab转空格
+按下<kbd>Enter</kbd>键运行`sf`。
 程序会输出：
 ```
-Indent length （default 4）:
+Tab length (skip if nothing):
 ```
 
-按下<kbd>Enter</kbd>键将缩进长度设为默认的4。
-或者先输入一个数字再按下<kbd>Enter</kbd>键。
+按下<kbd>Enter</kbd>来跳过。
 
-## 计划
- - 添加一个文件操作进度。
- - 添加二进制文件警告（当发现文件可能是二进制文件）。
- - 添加*作为通配符。
- - 添加多线程支持。
- - 添加Windows, Macos, Linux......的可执行文件到Github Release。
- - 添加一个控制台界面。*（此功能可能会被添加到下面这个计划中）*
- - 更名此项目为**Code File Tools** 。*（并添加更多工具）*
+或者先输入一个数字设置Tab长度再按下<kbd>Enter</kbd>键。
+
+### 删除无用的空格和Tab
+接下来程序会输出：
+```
+S: Only Delete Useless Spaces
+T: Only Delete Useless Tabs
+A: Delete All Useless Spaces And Tabs
+Delete mode (skip if nothing):
+```
+
+按下<kbd>Enter</kbd>来跳过。
+
+或者先输入一个模式*（S/T/A，大写）*再按下<kbd>Enter</kbd>键。
+
+```
+S：仅删除无用空格
+T：仅删除无用Tab
+A：无用空格和Tab都删除
+```
+
+### 在行末仅留下指定行数
+最后程序会输出：
+```
+Leave line number (skip if nothing):
+```
+
+按下<kbd>Enter</kbd>来跳过。
+
+或者先输入一个数字设置末行留几行再按下<kbd>Enter</kbd>键。
 
 **感谢使用**

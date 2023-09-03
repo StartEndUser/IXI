@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <fstream>
 #include <set>
+#include <tuple>
 #include <type_traits>
 #include <vector>
 #include <sys/stat.h>
@@ -236,12 +237,12 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
     }
     printf("\n");
 
-    // Indent
-    int indentLength = 4;
+    // Tab
+    int tabLength = -1;
     size_t size = 16;
     char *buffer = NULL;
-    printf("Indent length (default 4):");
-    getline(&buffer, &size, stdin);
+    printf("Tab length (skip if nothing):");
+    std::ignore = getline(&buffer, &size, stdin);
     for (;;)
     {
         if (strlen(buffer) == 1)
@@ -249,22 +250,83 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
             break;
         }
 
-        indentLength = atoi(buffer);
-        if (indentLength)
+        tabLength = atoi(buffer);
+        if (tabLength || (!tabLength && buffer[0] == '0'))
         {
             break;
         }
 
-        indentLength = 4;
-        printf("Indent length (default 4):");
+        tabLength = -1;
+        printf("Tab length (skip if nothing):");
         free(buffer);
         buffer = NULL;
-        getline(&buffer, &size, stdin);
+        std::ignore = getline(&buffer, &size, stdin);
     }
     free(buffer);
+    buffer = NULL;
     printf("\n");
 
-    // Tab 2 Space
+    // Delete Mode
+    char mode = '\0';
+    printf("S: Only Delete Useless Spaces\nT: Only Delete Useless Tabs\nA: Delete All Useless Spaces And Tabs\nDelete mode (skip if nothing):");
+    std::ignore = getline(&buffer, &size, stdin);
+    for (;;)
+    {
+        if (strlen(buffer) == 1)
+        {
+            break;
+        }
+
+        if (!(strcmp(buffer, "S\n") && strcmp(buffer, "T\n") && strcmp(buffer, "A\n")))
+        {
+            mode = buffer[0];
+            break;
+        }
+
+        mode = '\0';
+        printf("Delete mode (skip if nothing):");
+        free(buffer);
+        buffer = NULL;
+        std::ignore = getline(&buffer, &size, stdin);
+    }
+    free(buffer);
+    buffer = NULL;
+    printf("\n");
+
+    // Last Line
+    int lineLength = -1;
+    printf("Leave line number (skip if nothing):");
+    std::ignore = getline(&buffer, &size, stdin);
+    for (;;)
+    {
+        if (strlen(buffer) == 1)
+        {
+            break;
+        }
+
+        lineLength = atoi(buffer);
+        if (lineLength || (!lineLength && buffer[0] == '0'))
+        {
+            break;
+        }
+
+        lineLength = -1;
+        printf("Leave line number (skip if nothing):");
+        free(buffer);
+        buffer = NULL;
+        std::ignore = getline(&buffer, &size, stdin);
+    }
+    free(buffer);
+    buffer = NULL;
+    printf("\n");
+
+    // Read Files
+    if (tabLength == -1 && !mode && lineLength == -1)
+    {
+        printf("Nothing To Do\n");
+        return 0;
+    }
+
     printf("Running:\n");
     while (!files.empty())
     {
@@ -286,26 +348,110 @@ int main(int argumentNumberParameter, char *argumentsParameter[])
             continue;
         }
         std::string fileContent(size, '\0');
+        std::string fileResult = "";
         fseek(file, 0, SEEK_SET);
-        fread(&fileContent[0], size, sizeof(char), file);
+        std::ignore = fread(&fileContent[0], size, sizeof(char), file);
 
         fclose(file);
         file = fopen(files[0].c_str(), "w");
 
+        bool notEnd = false;
+        bool wantContinue = false;
+
         for (unsigned long long index = 0; index < fileContent.size(); ++index)
         {
-            if (fileContent[index] == '\t')
+            wantContinue = false;
+            if (!notEnd && (mode == 'A' || mode == 'S') && fileContent[index] == ' ')
             {
-                for (unsigned int _ = 0; _ < indentLength; ++_)
+                for (unsigned long long findIndex = index + 1; findIndex < fileContent.size(); ++findIndex)
                 {
-                    fputc(' ', file);
+                    if (fileContent[findIndex] == '\n')
+                    {
+                        index = findIndex - 1;
+                        wantContinue = true;
+                        break;
+                    }
+                    else if (fileContent[findIndex] != ' ' && (mode == 'S' || fileContent[findIndex] != '\t'))
+                    {
+                        notEnd = true;
+                        break;
+                    }
                 }
             }
-            else
+
+            if (wantContinue)
             {
-                fputc(fileContent[index], file);
+                continue;
+            }
+
+            if (!notEnd && (mode == 'A' || mode == 'T') && fileContent[index] == '\t')
+            {
+                for (unsigned long long findIndex = index + 1; findIndex < fileContent.size(); ++findIndex)
+                {
+                    if (fileContent[findIndex] == '\n')
+                    {
+                        index = findIndex - 1;
+                        wantContinue = true;
+                        break;
+                    }
+                    else if (fileContent[findIndex] != '\t' && (mode == 'T' || fileContent[findIndex] != ' '))
+                    {
+                        notEnd = true;
+                        break;
+                    }
+                }
+            }
+
+            if (wantContinue)
+            {
+                continue;
+            }
+
+            if (tabLength != -1 && fileContent[index] == '\t')
+            {
+                wantContinue = true;
+
+                for (unsigned int _ = 0; _ < tabLength; ++_)
+                {
+                    fileResult += " ";
+                }
+            }
+
+            if (wantContinue)
+            {
+                continue;
+            }
+
+            if (notEnd && fileContent[index] != ' ' && fileContent[index] != '\t')
+            {
+                notEnd = false;
+            }
+            fileResult += fileContent[index];
+        }
+
+        if (lineLength != -1)
+        {
+            // Delete All \n At The Tail
+            for (unsigned long long index = fileResult.size() - 1; index >= 0; --index)
+            {
+                if (fileResult[index] == '\n')
+                {
+                    fileResult.pop_back();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // Add \n At The Tail
+            for (unsigned int _ = 0; _ < lineLength; ++_)
+            {
+                fileResult += '\n';
             }
         }
+
+        fputs(fileResult.c_str(), file);
 
         fclose(file);
         files.erase(files.begin());
